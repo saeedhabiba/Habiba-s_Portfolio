@@ -1,0 +1,750 @@
+<SKIPPED_HTML_EDIT_MODE></SKIPPED_HTML_EDIT_MODE>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .loading {
+            transition: opacity 0.5s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Pulse animation for CTA buttons */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-xl font-bold gradient-text">PORTFOLIO</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium" onclick="trackNavClick('home')">Home</a>
+                        <a href="#about" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium" onclick="trackNavClick('about')">About</a>
+                        <a href="#projects" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium" onclick="trackNavClick('projects')">Projects</a>
+                        <a href="#skills" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium" onclick="trackNavClick('skills')">Skills</a>
+                        <a href="#contact" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium" onclick="trackNavClick('contact')">Contact</a>
+                    </div>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-gray-500 hover:text-gray-900 focus:outline-none" onclick="trackButtonClick('mobile-menu-toggle')">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium" onclick="trackNavClick('home-mobile')">Home</a>
+                <a href="#about" class="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium" onclick="trackNavClick('about-mobile')">About</a>
+                <a href="#projects" class="text-gray-700 hover:text-indigo-600 block px=3 py-2 rounded-md text-base font-medium" onclick="trackNavClick('projects-mobile')">Projects</a>
+                <a href="#skills" class="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium" onclick="trackNavClick('skills-mobile')">Skills</a>
+                <a href="#contact" class="text-gray-700 hover:text-indigo-600 block px-3 py-2 rounded-md text-base font-medium" onclick="trackNavClick('contact-mobile')">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-24 pb-16 md:pt-32 md:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-8 md:mb-0">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+                    Hi, I'm <span class="gradient-text">Umme Habiba</span>
+                </h1>
+                <h2 class="text-xl md:text-2xl text-gray-600 mb-6">
+                    Web Developer & Designer
+                </h2>
+                <p class="text-gray-500 mb-8 max-w-lg">
+                    I craft digital experiences that are beautiful, functional, and user-focused. Let's build something amazing together.
+                </p>
+                <div class="flex space-x-4">
+                    <button id="contactMeBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md font-medium transition duration-300 pulse" onclick="trackButtonClick('contact-cta')">Get in Touch</button>
+                    <button id="viewWorkBtn" class="border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-6 py-3 rounded-md font-medium transition duration-300" onclick="trackButtonClick('view-work-cta')">View My Work</button>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-8 border-white shadow-xl">
+                    <img src="dp.jpg" alt="Professional portrait of me smiling with a blurred city background" class="w-full h-full object-cover" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">About Me</h2>
+            <div class="w-20 h-1 bg-indigo-600 mx-auto"></div>
+        </div>
+        <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="md:w-1/3 flex justify-center mb-8 md:mb-0">
+                <div class="w-64 h-64 rounded-lg overflow-hidden shadow-lg">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/414ae63a-232d-491a-9417-e39710de42ef.png" alt="Me working at my desk with dual monitors showing code editor" class="w-full h-full object-cover" />
+                </div>
+            </div>
+            <div class="md:w-2/3">
+                <p class="text-gray-600 mb-6">
+                    I'm a passionate web developer with 5+ years of experience creating modern web applications. My expertise lies in JavaScript frameworks and designing intuitive user interfaces.
+                </p>
+                <p class="text-gray-600 mb-6">
+                    As a freelancer, I've worked with clients across various industries to deliver custom solutions that drive business growth. My approach combines technical excellence with creative problem-solving.
+                </p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-gray-900">Experience</h3>
+                        <p class="text-indigo-600">5+ Years</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-gray-900">Projects</h3>
+                        <p class="text-indigo-600">50+ Completed</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-gray-900">Clients</h3>
+                        <p class="text-indigo-600">20+ Satisfied</p>
+                    </div>
+                </div>
+                <button id="downloadCvBtn" class="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md font-medium transition duration-300" onclick="trackButtonClick('download-cv')">
+                    <span id="cvText">Download CV</span>
+                    <span id="cvLoading" class="ml-2 hidden">
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-16 px=4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb=4">My Projects</h2>
+            <div class="w-20 h-1 bg-indigo-600 mx-auto"></div>
+            <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Here are some of my recent projects that showcase my skills and expertise.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Project 1 -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6c6a0d5f-cec3-4d2b-89e3-3bec68ce34ac.png" alt="Dashboard interface screenshot with analytics charts and metrics" class="w-full h-full object-cover" />
+                </div>
+                <div class="p-6">
+                    <div class="uppercase tracking-wide text-sm text-indigo-600 font-semibold">Web Application</div>
+                    <h3 class="mt-2 text-xl font-semibold text-gray-900">Analytics Dashboard</h3>
+                    <p class="mt-2 text-gray-500">A responsive dashboard built with React and Chart.js to visualize complex data.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">React</span>
+                        <span class="px=2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Chart.js</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Firebase</span>
+                    </div>
+                    <div class="mt-6 flex space-x=4">
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium" onclick="trackProjectClick('analytics-dashboard', 'demo')">View Demo</button>
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium" onclick="trackProjectClick('analytics-dashboard', 'code')">View Code</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/3f6faa78-e90a-451b-b505-8f277555d952.png" alt="Mobile app screens showing e-commerce product listings and cart" class="w-full h-full object-cover" />
+                </div>
+                <div class="p-6">
+                    <div class="uppercase tracking-wide text-sm text-indigo-600 font-semibold">Mobile App</div>
+                    <h3 class="mt-2 text-xl font-semibold text-gray-900">E-Commerce App</h3>
+                    <p class="mt-2 text-gray-500">A cross-platform shopping app with payment integration and product management.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Flutter</span>
+                        <span class="px-2 py-1 bg-gray=100 text-gray-800 text-xs rounded-full">Firebase</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Stripe</span>
+                    </div>
+                    <div class="mt-6 flex space-x-4">
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium" onclick="trackProjectClick('ecommerce-app', 'demo')">View Demo</button>
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium" onclick="trackProjectClick('ecommerce-app', 'code')">View Code</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d9f3b6d7-27f3-4a03-ae78-b64ca15d783f.png" alt="Website homepage showing modern design with navigation menu" class="w-full h-full object-cover" />
+                </div>
+                <div class="p-6">
+                    <div class="uppercase tracking-wide text-sm text-indigo-600 font-semibold">Website</div>
+                    <h3 class="mt-2 text-xl font-semibold text-gray-900">Corporate Website</h3>
+                    <p class="mt-2 text-gray-500">A performant corporate website with CMS integration and SEO optimization.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-gray-100 text-gray=800 text-xs rounded-full">Next.js</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Tailwind CSS</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Headless CMS</span>
+                    </div>
+                    <div class="mt-6 flex space-x-4">
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium" onclick="trackProjectClick('corporate-website', 'demo')">View Demo</button>
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium" onclick="trackProjectClick('corporate-website', 'code')">View Code</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-12">
+            <button id="viewAllProjectsBtn" class="inline-flex items-center border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-6 py-3 rounded-md font-medium transition duration-300" onclick="trackButtonClick('view-all-projects')">
+                <span>View All Projects</span>
+                <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-16 px-4 sm:px=6 lg:px-8 max-w-7xl mx-auto bg-white">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">My Skills</h2>
+            <div class="w-20 h-1 bg-indigo-600 mx-auto"></div>
+            <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Technologies I work with to deliver high-quality solutions.</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            <div class="bg-gray-50 rounded-lg p=6 text-center">
+                <div class="w-16 h-16 mx-auto mb-3">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/3a34ca56-f555-4674-ab68-a1b95dc7688f.png" alt="JavaScript logo" class="w-full h-full object-contain" />
+                </div>
+                <h3 class="font-medium">JavaScript</h3>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-3">
+                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 95%"></div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p=6 text-center">
+                <div class="w-16 h-16 mx-auto mb-3">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/26c0af60-3a49-444f-871b-ef7409c7b154.png" alt="React logo" class="w-full h-full object-contain" />
+                </div>
+                <h3 class="font-medium">React</h3>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-3">
+                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 90%"></div>
+                </div>
+            </div>
+            <div class="bg-gray=50 rounded-lg p-6 text-center">
+                <div class="w-16 h-16 mx-auto mb-3">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/fafa6968-9bbd-410d-9ce4-26de5fb32d99.png" alt="Node.js logo" class="w-full h-full object-contain" />
+                </div>
+                <h3 class="font-medium">Node.js</h3>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-3">
+                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 85%"></div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p=6 text-center">
+                <div class="w-16 h-16 mx-auto mb-3">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e927d3bb-e7f9-443e-a10b-4a19a4fa9967.png" alt="Firebase logo" class="w-full h-full object-contain" />
+                </div>
+                <h3 class="font-medium">Firebase</h3>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-3">
+                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 80%"></div>
+                </div>
+            </div>
+            <div class="bg-gray=50 rounded-lg p-6 text-center">
+                <div class="w-16 h-16 mx-auto mb-3">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b9b33812-a6dc-47b9-87cc-787434837976.png" alt="Tailwind CSS logo" class="w-full h-full object-contain" />
+                </div>
+                <h3 class="font-medium">Tailwind CSS</h3>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-3">
+                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 90%"></div>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 text-center">
+                <div class="w-16 h-16 mx-auto mb-3">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f795a45a-515d-410c-8eac-10af10472876.png" alt="Figma logo" class="w-full h-full object-contain" />
+                </div>
+                <h3 class="font-medium">UI/UX Design</h3>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-3">
+                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 85%"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb=12">
+            <h2 class="text-3xl font-bold mb-4">Get In Touch</h2>
+            <div class="w-20 h-1 bg-indigo-600 mx-auto"></div>
+            <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Have a project in mind or want to discuss potential opportunities? Feel free to reach out!</p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-12">
+            <div class="md:w-1/2">
+                <form id="contactForm" class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="name" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" id="email" name="email" required class="w-full px=4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                        <input type="text" id="subject" name="subject" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                        <textarea id="message" name="message" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo=700 text-white px-6 py-3 rounded-md font-medium transition duration-300 flex justify-center items-center">
+                            <span id="submitText">Send Message</span>
+                            <div id="loading" class="hidden ml-2">
+                                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                    <div id="formMessage" class="hidden p=3 rounded-md"></div>
+                </form>
+            </div>
+            <div class="md:w-1/2">
+                <div class="bg-gray-50 rounded-xl p-8 h-full">
+                    <h3 class="text-xl font-semibold mb-6">Contact Information</h3>
+                    <div class="space-y=4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 pt-1">
+                                <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-500">Email</p>
+                                <a href="mailto:hello@example.com" class="text-sm text-gray=900 hover:text-indigo-600" onclick="trackContactClick('email')">saeedhabiba001@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 pt-1">
+                                <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-500">Phone</p>
+                                <a href="tel:+15551234567" class="text-sm text-gray-900 hover:text-indigo-600" onclick="trackContactClick('phone')">+9234100000</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 pt-1">
+                                <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-500">Address</p>
+                                <p class="text-sm text-gray-900">PAF-IAST Mang<br>Haripur,KPK Pakistan</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <h3 class="text-xl font-semibold mb=4">Follow Me</h3>
+                        <div class="flex space-x=4">
+                            <a href="https://github.com" target="_blank" class="text-gray-500 hover:text-indigo-600" onclick="trackSocialClick('github')">
+                                <i class="fab fa-github fa-lg"></i>
+                            </a>
+                            <a href="https://instagram.com" target="_blank" class="text-gray-500 hover:text-indigo-600" onclick="trackSocialClick('instagram')">
+                                <i class="fab fa-instagram fa-lg"></i>
+                            </a>
+                            <a href="https://twitter.com" target="_blank" class="text-gray-500 hover:text-indigo-600" onclick="trackSocialClick('twitter')">
+                                <i class="fab fa-twitter fa-lg"></i>
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" class="text-gray-500 hover:text-indigo-600" onclick="trackSocialClick('linkedin')">
+                                <i class="fab fa-linkedin fa-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <span class="text-xl font-bold gradient-text">PORTFOLIO</span>
+                    <p class="mt-2 text-gray-400">Building digital experiences that matter.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#home" class="text-gray-400 hover:text-white" onclick="trackNavClick('footer-home')">Home</a>
+                    <a href="#about" class="text-gray-400 hover:text-white" onclick="trackNavClick('footer-about')">About</a>
+                    <a href="#projects" class="text-gray-400 hover:text-white" onclick="trackNavClick('footer-projects')">Projects</a>
+                    <a href="#contact" class="text-gray-400 hover:text-white" onclick="trackNavClick('footer-contact')">Contact</a>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400">© <span id="currentYear"></span> My Portfolio. All rights reserved.</p>
+                <div class="mt-4 md:mt-0 flex space-x-6">
+                    <a href="https://github.com" target="_blank" class="text-gray-400 hover:text-white" onclick="trackSocialClick('footer-github')">
+                        <span class="sr-only">GitHub</span>
+                        <i class="fab fa-github fa-lg"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" class="text-gray-400 hover:text-white" onclick="trackSocialClick('footer-twitter')">
+                        <span class="sr-only">Twitter</span>
+                        <i class="fab fa-twitter fa-lg"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" class="text-gray-400 hover:text-white" onclick="trackSocialClick('footer-linkedin')">
+                        <span class="sr-only">LinkedIn</span>
+                        <i class="fab fa-linkedin fa-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize current year
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID",
+            measurementId: "YOUR_MEASUREMENT_ID"
+        };
+
+        // Initialize Firebase if config is set
+        if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+            firebase.initializeApp(firebaseConfig);
+            firebase.analytics();
+            
+            const database = firebase.database();
+            const contactsRef = database.ref('contacts');
+            const interactionsRef = database.ref('interactions');
+            
+            // Track navigation clicks
+            function trackNavClick(section) {
+                interactionsRef.push({
+                    type: 'navigation',
+                    section: section,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    userAgent: navigator.userAgent,
+                    pageUrl: window.location.href
+                });
+                
+                // Also log to Firebase Analytics
+                if (typeof firebase.analytics !== 'undefined') {
+                    firebase.analytics().logEvent('nav_click', {
+                        section: section
+                    });
+                }
+            }
+            
+            // Track button clicks
+            function trackButtonClick(buttonId) {
+                interactionsRef.push({
+                    type: 'button_click',
+                    button_id: buttonId,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                // Log to Firebase Analytics
+                if (typeof firebase.analytics !== 'undefined') {
+                    firebase.analytics().logEvent('button_click', {
+                        button_id: buttonId
+                    });
+                }
+                
+                // Handle specific button actions
+                switch(buttonId) {
+                    case 'contact-cta':
+                        document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+                        break;
+                    case 'view-work-cta':
+                        document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+                        break;
+                    case 'download-cv':
+                        downloadCV();
+                        break;
+                    case 'view-all-projects':
+                        // In a real app, this would redirect to a projects page
+                        alert('Redirecting to all projects page');
+                        trackButtonClick('view-all-projects-redirect');
+                        break;
+                }
+            }
+            
+            // Track project interactions
+            function trackProjectClick(projectId, action) {
+                interactionsRef.push({
+                    type: 'project_interaction',
+                    project_id: projectId,
+                    action: action,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                // Show appropriate alert based on action
+                if (action === 'demo') {
+                    alert(`Opening demo for ${projectId}`);
+                } else {
+                    alert(`Redirecting to code for ${projectId}`);
+                }
+            }
+            
+            // Track social media clicks
+            function trackSocialClick(platform) {
+                interactionsRef.push({
+                    type: 'social_click',
+                    platform: platform,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
+            
+            // Track contact method clicks
+            function trackContactClick(method) {
+                interactionsRef.push({
+                    type: 'contact_method',
+                    method: method,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
+            
+            // Download CV function
+            function downloadCV() {
+                const btn = document.getElementById('downloadCvBtn');
+                const text = document.getElementById('cvText');
+                const loading = document.getElementById('cvLoading');
+                
+                btn.disabled = true;
+                text.textContent = 'Preparing CV...';
+                loading.classList.remove('hidden');
+                
+                // Simulate download (in a real app, this would fetch from storage)
+                setTimeout(() => {
+                    // Track the download
+                    interactionsRef.push({
+                        type: 'download',
+                        file_type: 'cv',
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+                    
+                    // Create a dummy PDF for download
+                    const blob = new Blob(["This would be your CV content in a real application"], { type: 'application/pdf' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'YourName_CV.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    // Reset button
+                    btn.disabled = false;
+                    text.textContent = 'Download CV';
+                    loading.classList.add('hidden');
+                }, 1500);
+            }
+            
+            // Handle contact form submission
+            document.getElementById('contactForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const submitBtn = document.getElementById('submitBtn');
+                const submitText = document.getElementById('submitText');
+                const loading = document.getElementById('loading');
+                const formMessage = document.getElementById('formMessage');
+                
+                submitBtn.disabled = true;
+                submitText.textContent = 'Sending...';
+                loading.classList.remove('hidden');
+                formMessage.classList.add('hidden');
+                
+                // Get form values
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+                
+                // Create new contact entry
+                const newContactRef = contactsRef.push();
+                newContactRef.set({
+                    name: name,
+                    email: email,
+                    subject: subject,
+                    message: message,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    read: false
+                })
+                .then(() => {
+                    // Show success message
+                    formMessage.textContent = 'Message sent successfully! I will get back to you soon.';
+                    formMessage.classList.remove('hidden');
+                    formMessage.classList.remove('bg-red-50', 'text-red-800');
+                    formMessage.classList.add('bg-green-50', 'text-green-800');
+                    
+                    // Reset form
+                    document.getElementById('contactForm').reset();
+                    
+                    // Track successful submission
+                    interactionsRef.push({
+                        type: 'contact_form',
+                        status: 'success',
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+                })
+                .catch((error) => {
+                    // Show error message
+                    formMessage.textContent = 'Error sending message. Please try again or contact me directly at hello@example.com';
+                    formMessage.classList.remove('hidden');
+                    formMessage.classList.remove('bg-green-50', 'text-green-800');
+                    formMessage.classList.add('bg-red-50', 'text-red-800');
+                    
+                    // Track failed submission
+                    interactionsRef.push({
+                        type: 'contact_form',
+                        status: 'failed',
+                        error: error.message,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+                    
+                    console.error('Error writing to Firebase Database', error);
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Send Message';
+                    loading.classList.add('hidden');
+                });
+            });
+        } else {
+            console.warn('Firebase configuration not set up. Please add your Firebase config.');
+            
+            // Fallback functions for when Firebase isn't configured
+            window.trackNavClick = function(section) {
+                console.log('Navigation:', section);
+            };
+            
+            window.trackButtonClick = function(buttonId) {
+                console.log('Button clicked:', buttonId);
+                return true;
+            };
+            
+            window.trackProjectClick = function(projectId, action) {
+                console.log('Project interaction:', projectId, action);
+                alert(`Would normally open ${action} for ${projectId}`);
+                return true;
+            };
+            
+            window.trackSocialClick = function(platform) {
+                console.log('Social click:', platform);
+                return true;
+            };
+            
+            window.trackContactClick = function(method) {
+                console.log('Contact method:', method);
+                return true;
+            };
+        }
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            trackButtonClick('mobile-menu-toggle');
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 70,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Hide mobile menu if open
+                    const menu = document.getElementById('mobile-menu');
+                    menu.classList.add('hidden');
+                }
+            });
+        });
+
+        // Animate elements when they come into view
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.fade-in');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+                
+                if (elementPosition < screenPosition) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        // Add fade-in class to all sections
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('fade-in');
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    </script>
+</body>
+</html>
